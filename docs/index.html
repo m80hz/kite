@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+        content="KITE: Keyframe-Indexed Tokenized Evidence for VLM-Based Robot Failure Analysis">
+  <meta name="keywords" content="KITE, Robot Failure Analysis, VLM, Keyframe, Bird's-Eye View, Robotics, ICRA">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>KITE: Keyframe-Indexed Tokenized Evidence for VLM-Based Robot Failure Analysis</title>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Noto+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400&display=swap"
+        rel="stylesheet">
+
+  <!-- Bulma + Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+
+  <!-- Custom -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ─── Hero ─── -->
+<section class="hero is-medium hero-gradient">
+  <div class="hero-body">
+    <div class="container is-max-desktop has-text-centered">
+      <!-- Venue badge -->
+      <span class="venue-badge">ICRA 2026</span>
+
+      <h1 class="title is-1 publication-title">
+        <span class="kite-accent">KITE</span>: Keyframe-Indexed Tokenized Evidence<br>
+        for VLM-Based Robot Failure Analysis
+      </h1>
+
+      <div class="is-size-5 publication-authors">
+        <span class="author-block">
+          <a href="https://m80hz.github.io/" target="_blank">Mehdi Hosseinzadeh</a>,
+        </span>
+        <span class="author-block">
+          <a href="#">King Hang Wong</a>,
+        </span>
+        <span class="author-block">
+          <a href="https://ferasdayoub.com/ " target="_blank">Feras Dayoub</a>
+        </span>
+      </div>
+
+      <div class="is-size-6 publication-affiliations">
+        <span class="affiliation-block">
+          The Australian Institute for Machine Learning (AIML), Adelaide University, Australia
+        </span>
+      </div>
+
+      <!-- Links -->
+      <div class="buttons is-centered publication-links">
+        <a href="#" class="button is-rounded is-dark link-btn">
+          <span class="icon"><i class="fas fa-file-pdf"></i></span>
+          <span>Paper</span>
+        </a>
+        <a href="#" class="button is-rounded is-dark link-btn">
+          <span class="icon"><i class="ai ai-arxiv"></i></span>
+          <span>arXiv</span>
+        </a>
+        <a href="https://github.com/m80hz/kite" class="button is-rounded is-dark link-btn">
+          <span class="icon"><i class="fab fa-github"></i></span>
+          <span>Code</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Teaser Figure ─── -->
+<section class="section teaser-section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered">
+      <div class="column is-12">
+        <figure class="image teaser-image">
+          <!-- Figure 1 from the paper -->
+          <img src="assets/kite_teaser.png"
+               alt="KITE failure explanation on a real dual-arm robot (DART). Left: optical flow, RGB keyframes with detections, depth, pseudo-BEV. Right: VLM failure explanation referencing BEV."
+               loading="lazy">
+        </figure>
+        <p class="has-text-centered teaser-caption">
+          <b>Failure explanation in real-world settings with KITE.</b>
+          The pipeline distills a robot execution video into motion-salient keyframes, each paired with object detections, depth estimates, and a pseudo-BEV schematic.
+          A VLM then produces grounded failure analysis&mdash;here referencing the BEV diagram to infer the cup's position remained unchanged.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Abstract ─── -->
+<section class="section" id="abstract">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered">
+      <div class="column is-10">
+        <h2 class="title is-3 section-title">Abstract</h2>
+        <div class="content has-text-justified abstract-text">
+          <p>
+            We present <b>KITE</b>, a <em>training-free</em>, keyframe-anchored, layout-grounded front-end that converts long robot-execution videos into compact, interpretable <em>tokenized evidence</em> for vision-language models (VLMs).
+            KITE distills each trajectory into a small set of <em>motion-salient keyframes</em> with open-vocabulary detections and pairs each keyframe with a schematic <em>bird's-eye-view (BEV)</em> representation that encodes relative object layout, axes, timestamps, and detection confidence.
+            These visual cues are serialized with robot-profile and scene-context tokens into a unified prompt, allowing the same front-end to support <b>failure detection, identification, localization, explanation, and correction</b> with an off-the-shelf VLM.
+          </p>
+          <p>
+            On the <a href="https://arxiv.org/abs/2505.12224" target="_blank">RoboFAC</a> benchmark, KITE with Qwen2.5-VL substantially improves over vanilla Qwen2.5-VL in the training-free setting&mdash;with especially large gains on simulation failure detection (+36%), identification (+18%), and localization (+33%)&mdash;while remaining competitive with a RoboFAC-tuned baseline.
+            A small QLoRA fine-tune further improves explanation and correction quality.
+            We also report qualitative results on real dual-arm robots, demonstrating the practical applicability of KITE as a structured and interpretable front-end for robot failure analysis.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Method ─── -->
+<section class="section has-background-light" id="method">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered">
+      <div class="column is-10">
+        <h2 class="title is-3 section-title">Method</h2>
+        <p class="has-text-centered method-subtitle">
+          KITE converts a raw execution video into a compact, interpretable evidence bundle for any VLM.
+        </p>
+
+        <!-- Pipeline overview figure -->
+        <figure class="image pipeline-figure">
+          <!-- Figure 2 from the paper -->
+          <img src="assets/kite_pipeline.png"
+               alt="Overview of the KITE pipeline: keyframe selection, open-vocabulary detection, depth estimation, scene graph construction, pseudo-BEV rendering, and VLM prompting."
+               loading="lazy">
+        </figure>
+
+        <!-- Key components as cards -->
+        <div class="columns is-multiline method-cards">
+          <div class="column is-4">
+            <div class="card method-card">
+              <div class="card-content">
+                <div class="method-card-icon">
+                  <i class="fas fa-video"></i>
+                </div>
+                <p class="title is-5">Keyframe Selection</p>
+                <p class="is-size-6">Motion-salient frames selected via optical flow peak detection with temporal non-maximum suppression.</p>
+              </div>
+            </div>
+          </div>
+          <div class="column is-4">
+            <div class="card method-card">
+              <div class="card-content">
+                <div class="method-card-icon">
+                  <i class="fas fa-eye"></i>
+                </div>
+                <p class="title is-5">Per-Keyframe Perception</p>
+                <p class="is-size-6">Open-vocabulary detection, single-view depth estimation, and a coarse contact-proxy token per frame.</p>
+              </div>
+            </div>
+          </div>
+          <div class="column is-4">
+            <div class="card method-card">
+              <div class="card-content">
+                <div class="method-card-icon">
+                  <i class="fas fa-map"></i>
+                </div>
+                <p class="title is-5">Pseudo-BEV Schematic</p>
+                <p class="is-size-6">Non-metric top-down layout cues with tracked objects, confidence radii, timestamps, and consistent IDs.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- KITE context string -->
+        <div class="kite-context-box">
+          <p class="kite-context-label">KITE Structured Context</p>
+          <code class="kite-context-string">
+            <span class="tok tok-robot">[ROBOT]</span> morphology, gripper, workspace
+            &nbsp;<span class="tok-sep">‖</span>&nbsp;
+            <span class="tok tok-plan">[PLAN]</span> numbered plan steps
+            &nbsp;<span class="tok-sep">‖</span>&nbsp;
+            <span class="tok tok-kf">[KF i<sub>k</sub> @ t<sub>k</sub>]</span> timestamped keyframes
+            &nbsp;<span class="tok-sep">‖</span>&nbsp;
+            <span class="tok tok-contact">[CONTACT]</span> Y<sub>k</sub>
+            &nbsp;<span class="tok-sep">‖</span>&nbsp;
+            <span class="tok tok-scene">[GLOBAL_SCENE]</span> tracks &amp; relations
+          </code>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Video / Demo ─── -->
+<section class="section" id="demo">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered">
+      <div class="column is-10">
+        <h2 class="title is-3 section-title">Demo</h2>
+        <p class="has-text-centered mb-5">
+          Watch KITE in action&mdash;from raw video to grounded failure explanation.
+        </p>
+        <div class="video-container">
+          <!-- Option A: YouTube embed -->
+          <!--
+          <iframe src="https://www.youtube.com/embed/VIDEO_ID"
+                  title="KITE Demo Video"
+                  frameborder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowfullscreen>
+          </iframe>
+          -->
+          <!-- Option B: Self-hosted MP4 -->
+          <video controls autoplay muted playsinline loop>
+            <source src="assets/kite_demo.mp4" type="video/mp4">
+          </video>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Results ─── -->
+<section class="section has-background-light" id="results">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered">
+      <div class="column is-10">
+        <h2 class="title is-3 section-title">Results</h2>
+        <p class="has-text-centered mb-5">
+          Evaluated on the <a href="https://arxiv.org/abs/2505.12224" target="_blank">RoboFAC</a> benchmark with both simulation and real-world tasks.
+          See the <a href="#">paper</a> for full results.
+        </p>
+
+        <!-- Headline numbers -->
+        <div class="columns is-multiline has-text-centered headline-numbers">
+          <div class="column is-4">
+            <div class="stat-card">
+              <p class="stat-number">+36%</p>
+              <p class="stat-label">Failure Detection<br>(Simulation)</p>
+            </div>
+          </div>
+          <div class="column is-4">
+            <div class="stat-card">
+              <p class="stat-number">+18%</p>
+              <p class="stat-label">Failure Identification<br>(Simulation)</p>
+            </div>
+          </div>
+          <div class="column is-4">
+            <div class="stat-card">
+              <p class="stat-number">+33%</p>
+              <p class="stat-label">Failure Localization<br>(Simulation)</p>
+            </div>
+          </div>
+        </div>
+
+        <p class="has-text-centered is-size-6 mb-5" style="color:#666;">
+          Training-free gains of KITE + Qwen2.5-VL-7B over vanilla Qwen2.5-VL-7B
+        </p>
+
+        <!-- Main results table -->
+        <h3 class="title is-5 mt-6">Multiple-Choice QA (Success Rate ↑)</h3>
+        <div class="table-container">
+          <table class="table is-bordered is-hoverable is-fullwidth results-table">
+            <thead>
+              <tr>
+                <th rowspan="2">Model</th>
+                <th colspan="3" class="has-text-centered">Simulation</th>
+                <th colspan="3" class="has-text-centered">Real-world</th>
+              </tr>
+              <tr>
+                <th class="has-text-centered">FD</th>
+                <th class="has-text-centered">FI</th>
+                <th class="has-text-centered">FL</th>
+                <th class="has-text-centered">FD</th>
+                <th class="has-text-centered">FI</th>
+                <th class="has-text-centered">FL</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Gemini-2.0</td>
+                <td class="has-text-centered">0.48</td>
+                <td class="has-text-centered">0.27</td>
+                <td class="has-text-centered">0.75</td>
+                <td class="has-text-centered">0.60</td>
+                <td class="has-text-centered">0.11</td>
+                <td class="has-text-centered">0.18</td>
+              </tr>
+              <tr>
+                <td>GPT-4o</td>
+                <td class="has-text-centered">0.64</td>
+                <td class="has-text-centered">0.21</td>
+                <td class="has-text-centered">0.71</td>
+                <td class="has-text-centered">0.96</td>
+                <td class="has-text-centered">0.43</td>
+                <td class="has-text-centered">0.52</td>
+              </tr>
+              <tr>
+                <td>Qwen2.5-VL-7B</td>
+                <td class="has-text-centered">0.52</td>
+                <td class="has-text-centered">0.26</td>
+                <td class="has-text-centered">0.22</td>
+                <td class="has-text-centered">0.83</td>
+                <td class="has-text-centered">0.38</td>
+                <td class="has-text-centered">0.72</td>
+              </tr>
+              <tr class="is-selected highlight-row">
+                <td><b>KITE + Qwen2.5-VL-7B</b></td>
+                <td class="has-text-centered"><b>0.88</b></td>
+                <td class="has-text-centered"><b>0.44</b></td>
+                <td class="has-text-centered"><b>0.55</b></td>
+                <td class="has-text-centered"><b>0.84</b></td>
+                <td class="has-text-centered"><b>0.43</b></td>
+                <td class="has-text-centered"><b>0.74</b></td>
+              </tr>
+              <tr class="finetuned-separator">
+                <td>RoboFAC-7B<sup>†</sup></td>
+                <td class="has-text-centered">0.91</td>
+                <td class="has-text-centered">0.63</td>
+                <td class="has-text-centered">0.94</td>
+                <td class="has-text-centered">0.80</td>
+                <td class="has-text-centered">0.56</td>
+                <td class="has-text-centered">0.71</td>
+              </tr>
+              <tr class="is-selected highlight-row-ft">
+                <td><b>KITE + QLoRA<sup>†</sup></b></td>
+                <td class="has-text-centered"><b>0.93</b></td>
+                <td class="has-text-centered"><b>0.69</b></td>
+                <td class="has-text-centered"><b>0.92</b></td>
+                <td class="has-text-centered"><b>0.89</b></td>
+                <td class="has-text-centered"><b>0.58</b></td>
+                <td class="has-text-centered"><b>0.77</b></td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colspan="7" class="is-size-7" style="border-top: 2px solid #ddd;">
+                  FD = Failure Detection, FI = Failure Identification, FL = Failure Locating. <sup>†</sup> Fine-tuned on RoboFAC.
+                </td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+
+        <!-- Qualitative: Simulation -->
+        <h3 class="title is-5 mt-6">Qualitative Results</h3>
+        <div class="columns is-centered">
+          <div class="column is-12">
+            <figure class="image qual-figure">
+              <!-- Figure 3 from the paper -->
+              <img src="assets/kite_sim_qualitative.png"
+                   alt="Qualitative results on a RoboFAC simulation task showing object detections, optical flow, pseudo-BEV, depth, and narrative summary."
+                   loading="lazy">
+            </figure>
+            <p class="has-text-centered qual-caption">
+              <b>Simulation (RoboFAC).</b>
+              Keyframes with detection overlays, optical flow, pseudo-BEV schematics, and depth estimates.
+              KITE correctly localises the failure frame and generates a grounded narrative summary.
+            </p>
+          </div>
+        </div>
+
+        <div class="columns is-centered mt-5">
+          <div class="column is-12">
+            <figure class="image qual-figure">
+              <!-- Figure 4 from the paper -->
+              <img src="assets/kite_real_qualitative.png"
+                   alt="Qualitative results on a real-world ALOHA-2 dual-arm robot, showing failure during a handover task."
+                   loading="lazy">
+            </figure>
+            <p class="has-text-centered qual-caption">
+              <b>Real-world (ALOHA-2).</b>
+              During a bimanual handover the fork is dropped. KITE's structured context enables the VLM to produce a
+              grounded explanation that references arm coordination and the robot's dual-arm morphology.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── BibTeX ─── -->
+<section class="section" id="bibtex">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered">
+      <div class="column is-10">
+        <h2 class="title is-3 section-title">BibTeX</h2>
+        <div class="bibtex-box">
+          <button class="button is-small is-light copy-btn" onclick="copyBibtex()">
+            <span class="icon is-small"><i class="fas fa-copy"></i></span>
+            <span>Copy</span>
+          </button>
+<pre id="bibtex-text"><code>@inproceedings{hosseinzadeh2025kite,
+  title     = {KITE: Keyframe-Indexed Tokenized Evidence for VLM-Based Robot Failure Analysis},
+  author    = {Hosseinzadeh, Mehdi and Wong, King Hang and Dayoub, Feras},
+  booktitle = {IEEE International Conference on Robotics and Automation (ICRA)},
+  year      = {2026}
+}</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Footer ─── -->
+<footer class="footer">
+  <div class="container">
+    <div class="content has-text-centered">
+      <div class="footer-links">
+        <a href="#" class="icon-link" title="Paper PDF">
+          <i class="fas fa-file-pdf"></i>
+        </a>
+        <a href="https://github.com/m80hz/kite" class="icon-link" title="GitHub">
+          <i class="fab fa-github"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+function copyBibtex() {
+  const text = document.getElementById('bibtex-text').innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.querySelector('.copy-btn span:last-child');
+    btn.textContent = 'Copied!';
+    setTimeout(() => { btn.textContent = 'Copy'; }, 2000);
+  });
+}
+
+// Smooth scroll for anchor links
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', function (e) {
+    const target = document.querySelector(this.getAttribute('href'));
+    if (target) {
+      e.preventDefault();
+      target.scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+});
+
+// Fade-in on scroll
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.section').forEach(section => {
+  section.classList.add('fade-in');
+  observer.observe(section);
+});
+</script>
+</body>
+</html>
