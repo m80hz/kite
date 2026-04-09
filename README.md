@@ -1,24 +1,40 @@
-# KITE: Keyframe-Indexed Tokenized Evidence for VLM-Based Robot Failure Analysis
+<p align="center">
+  <h1 align="center">KITE [ICRA 2026]</h1>
+  <h3 align="center">Keyframe-Indexed Tokenized Evidence for VLM-Based Robot Failure Analysis</h3>
+ <p align="center">
+    <a href="https://m80hz.github.io/" target="_blank">Mehdi Hosseinzadeh</a>
+    &nbsp;&nbsp;&nbsp;&nbsp;
+    <a href="#">King Hang Wong</a>
+    &nbsp;&nbsp;&nbsp;&nbsp;
+    <a href="https://ferasdayoub.com/" target="_blank">Feras Dayoub</a>
+  </p>
+ 
+ <h5 align="center">The Australian Institute for Machine Learning (AIML), Adelaide University, Australia</h5>
 
-### [Paper](https://arxiv.org/abs/XXXX.XXXXX) | [Project Page](https://m80hz.github.io/kite/)
-
-**IEEE International Conference on Robotics and Automation (ICRA), 2026**
-
-[Mehdi Hosseinzadeh](https://m80hz.github.io/), [King Hang Wong](#), [Feras Dayoub](https://ferasdayoub.com/)
-
-The Australian Institute for Machine Learning (AIML), Adelaide University, Australia
-
----
+  <p align="center">
+    <a href="https://m80hz.github.io/kite/" target="_blank">
+      <img src="https://img.shields.io/badge/🌐_Project_Page-007ACC?style=for-the-badge" alt="Project Page" />
+    </a>
+    &nbsp;
+    <a href="https://arxiv.org/abs/2604.07034" target="_blank">
+      <img src="https://img.shields.io/badge/📄_Paper-B31B1B?style=for-the-badge" alt="arXiv" />
+    </a>
+    &nbsp;
+    <a href="https://github.com/m80hz/kite" target="_blank">
+      <img src="https://img.shields.io/badge/💻_Code-181717?style=for-the-badge&amp;logo=github" alt="GitHub" />
+    </a>
+    &nbsp;
+    <a href="#">
+      <img src="https://img.shields.io/badge/🎮_Demo_(Soon)-8A2BE2?style=for-the-badge" alt="Demo" />
+    </a>
+  </p>
+</p>
 
 <p align="center">
   <img src="docs/kite_teaser.png" alt="KITE Overview" width="100%">
 </p>
 
-## Abstract
-
-We present **KITE**, a *training-free*, keyframe-anchored, layout-grounded front-end that converts long robot-execution videos into compact, interpretable tokenized evidence for vision-language models (VLMs). KITE distills each trajectory into a small set of motion-salient keyframes with open-vocabulary detections and pairs each keyframe with a schematic bird's-eye-view (BEV) representation that encodes relative object layout, axes, timestamps, and detection confidence. These visual cues are serialized with robot-profile and scene-context tokens into a unified prompt, allowing the same front-end to support failure detection, identification, localization, explanation, and correction with an off-the-shelf VLM.
-
-On the RoboFAC benchmark, KITE with Qwen2.5-VL substantially improves over vanilla Qwen2.5-VL in the training-free setting, with especially large gains on simulation failure detection, identification, and localization, while remaining competitive with a RoboFAC-tuned baseline. A small QLoRA fine-tune further improves explanation and correction quality.
+---
 
 ## Code Release
 
