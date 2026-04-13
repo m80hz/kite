@@ -1,0 +1,6 @@
+[submodule "thirdparty/GroundingDINO"]
+	path = thirdparty/GroundingDINO
+	url = https://github.com/IDEA-Research/GroundingDINO.git
+[submodule "thirdparty/Depth-Anything-V2"]
+	path = thirdparty/Depth-Anything-V2
+	url = https://github.com/DepthAnything/Depth-Anything-V2.git

@@ -1,0 +1,22 @@
+opencv-python
+numpy
+torch
+httpx
+faiss-cpu
+pillow
+matplotlib
+tqdm
+open-clip-torch
+# python_version >= '3.10'
+ultralytics>=8.0.0
+plotly
+transformers>=4.40.0
+peft>=0.11.0
+accelerate>=0.30.0
+bitsandbytes>=0.43.0
+datasets>=2.19.0
+wandb
+gradio>=4.0.0
+rouge-score>=0.1.2
+sacrebleu>=2.4.0
+sentence-transformers

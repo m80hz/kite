@@ -1,0 +1,9 @@
+{
+  "name": " SO-100 robotic arm",
+  "morphology": "single-arm",
+  "arms": 1,
+  "grippers": 1,
+  "end_effectors": "parallel_jaw",
+  "sensors": "RGB camera",
+  "workspace": "tabletop"
+}

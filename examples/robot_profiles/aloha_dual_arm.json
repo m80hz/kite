@@ -1,0 +1,11 @@
+{
+  "name": "Aloha Stationary",
+  "morphology": "dual-arm",
+  "arms": 2,
+  "grippers": 2,
+  "end_effectors": "parallel_jaws",
+  "sensors": "RGB-D camera",
+  "workspace": "tabletop",
+  "joint_count_per_arm": 6,
+  "reach_per_arm_m": 0.75
+}

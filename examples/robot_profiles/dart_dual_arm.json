@@ -1,0 +1,9 @@
+{
+  "name": "DART",
+  "morphology": "mobile-base dual-arm",
+  "arms": 2,
+  "grippers": 2,
+  "end_effectors": "dexterous hands",
+  "sensors": "RGB-D head camera",
+  "workspace": "bench-height workspace within mobile base reach"
+}
